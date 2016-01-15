@@ -38,13 +38,21 @@ void keyboard (GLFWwindow* window, int key, int scancode, int action, int mods)
 				}            	
 				break;
 			case GLFW_KEY_SPACE:
-				counter=0;
-				theta = (float)(rectangle_rotation*M_PI/180.0);
-				shoot_angle = theta;
-				ballx = 16*cos(theta)-70.0;
-				bally = 16*sin(theta)+base_position+1;
-				velocity = initial_velocity;
-				shoot_time=0;
+				if(bally<=-42){
+					counter=0;
+					theta = (float)(rectangle_rotation*M_PI/180.0);
+					shoot_angle = theta;
+					ballx = 16*cos(theta)-70.0;
+					bally = 16*sin(theta)+base_position+1;
+					velocity = initial_velocity;
+					shoot_time=0;
+				}
+				break;
+			case GLFW_KEY_LEFT:
+				initial_velocity+=0.05;
+				break;
+			case GLFW_KEY_RIGHT:
+				initial_velocity-=0.05;
 				break;
 			default:
 				break;

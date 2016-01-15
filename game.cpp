@@ -1,6 +1,7 @@
 #include "initobjects.cpp"
 #include "initgame.cpp"
 
+
 using namespace std;
 
 
@@ -69,10 +70,11 @@ int main (int argc, char** argv)
 		glfwPollEvents();
 
 		current_time = glfwGetTime(); 
-		if ((current_time - last_update_time) >= 0.05) { 
+		if ((current_time - last_update_time) >= 0.08) { 
            ballx+=velocity*cos(shoot_angle)*shoot_time;
            bally+=velocity*sin(shoot_angle)*shoot_time-gravity*shoot_time*shoot_time/2.0;
            shoot_time+=0.1;
+           cout<<initial_velocity*20<<endl;
            last_update_time = current_time;
        }
    }
