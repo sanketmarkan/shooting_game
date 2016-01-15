@@ -60,8 +60,6 @@ void draw (){
     bally+=sin(shoot_angle)/10.0;
 }
 
-/* Initialise glfw window, I/O callbacks and the renderer to use */
-/* Nothing to Edit here */
 
 
 int main (int argc, char** argv)

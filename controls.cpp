@@ -5,11 +5,11 @@ float camera_rotation_angle = 90;
  float rotate_angle=5,shoot_angle;
  float ballx,bally;
  int counter=0;
-/* Executed when a regular key is pressed/released/held-down */
-/* Prefered for Keyboard events */
+
+
+
  void keyboard (GLFWwindow* window, int key, int scancode, int action, int mods)
  {
-	// Function is called first on GLFW_PRESS.
     float theta;
     if (action == GLFW_RELEASE) {
       switch (key) {
@@ -70,7 +70,6 @@ void keyboardChar (GLFWwindow* window, unsigned int key)
  }
 }
 
-/* Executed when a mouse button is pressed/released */
 void mouseButton (GLFWwindow* window, int button, int action, int mods)
 {
 	switch (button) {
