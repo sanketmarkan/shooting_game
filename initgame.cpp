@@ -1,16 +1,3 @@
-#include <iostream>
-#include <cmath>
-#include <math.h>
-#include <fstream>
-#include <vector>
-
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-
-#define GLM_FORCE_RADIANS
-#include <glm/glm.hpp>
-#include <glm/gtx/transform.hpp>
-#include <glm/gtc/matrix_transform.hpp>
 #include "controls.cpp"
 
 void reshapeWindow (GLFWwindow* window, int width, int height)
@@ -23,8 +10,8 @@ void reshapeWindow (GLFWwindow* window, int width, int height)
 
 	glViewport (0, 0, (GLsizei) fbwidth, (GLsizei) fbheight);
 
-      Matrices.projection = glm::ortho(-7.0f, 7.0f, -4.0f, 4.0f, 0.1f, 500.0f);
-  }
+	Matrices.projection = glm::ortho(-7.0f, 7.0f, -4.0f, 4.0f, 0.1f, 500.0f);
+}
 
 GLFWwindow* initGLFW (int width, int height)
 {
@@ -65,10 +52,10 @@ void initGL (GLFWwindow* window, int width, int height)
 	createCannon ();
 	createBase ();
 	createSupport ();
-    createBall ();
-    programID = LoadShaders( "Sample_GL.vert", "Sample_GL.frag" );
-    Matrices.MatrixID = glGetUniformLocation(programID, "MVP");
-    reshapeWindow (window, width, height);
+	createBall ();
+	programID = LoadShaders( "Sample_GL.vert", "Sample_GL.frag" );
+	Matrices.MatrixID = glGetUniformLocation(programID, "MVP");
+	reshapeWindow (window, width, height);
 
 	glClearColor (0.3f, 0.3f, 0.3f, 0.0f); // R, G, B, A
 	glClearDepth (1.0f);

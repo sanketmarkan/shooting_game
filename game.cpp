@@ -1,20 +1,8 @@
-#include <iostream>
-#include <cmath>
-#include <math.h>
-#include <fstream>
-#include <vector>
-
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-
-#define GLM_FORCE_RADIANS
-#include <glm/glm.hpp>
-#include <glm/gtx/transform.hpp>
-#include <glm/gtc/matrix_transform.hpp>
 #include "initobjects.cpp"
 #include "initgame.cpp"
 
 using namespace std;
+
 
 void draw (){
 	glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -56,8 +44,10 @@ void draw (){
 	MVP = VP * Matrices.model;
 	glUniformMatrix4fv(Matrices.MatrixID, 1, GL_FALSE, &MVP[0][0]);
 	draw3DObject(base);
-    ballx+=cos(shoot_angle)/10.0;
-    bally+=sin(shoot_angle)/10.0;
+
+    ballx+=velocity*cos(shoot_angle)*shoot_time;
+    bally+=velocity*sin(shoot_angle)*shoot_time-gravity*shoot_time*shoot_time/2.0;
+    shoot_time+=0.085;
 }
 
 
@@ -89,6 +79,7 @@ int main (int argc, char** argv)
 		current_time = glfwGetTime(); // Time in seconds
 		if ((current_time - last_update_time) >= 0.5) { // atleast 0.5s elapsed since last frame
 			// do something every 0.5 seconds ..
+            //shoot_time+=0.5;
 			last_update_time = current_time;
 		}
 	}
