@@ -19,19 +19,21 @@ void draw (){
 
 	glm::mat4 MVP;	
 
-	glm::mat4 translate = glm::translate (glm::vec3(-6.2f, base_position, 0));        // glTranslatef
+	glm::mat4 translate = glm::translate (glm::vec3(-70.0f, base_position+1, 0));        // glTranslatef
 	glm::mat4 rotate = glm::rotate((float)(rectangle_rotation*M_PI/180.0f), glm::vec3(0,0,1)); // rotate about vector (-1,0.8,1)
 	Matrices.model = (translate * rotate);
 	MVP = VP * Matrices.model;
 	glUniformMatrix4fv(Matrices.MatrixID, 1, GL_FALSE, &MVP[0][0]);
 	draw3DObject(cannon);
 
-    translate = glm::translate (glm::vec3(-5.75f, -4, 0));        // glTranslatef
+
+
+    translate = glm::translate (glm::vec3(-68.0f,-42, 0));        // glTranslatef
     glm::mat4 scale = glm::scale (glm::vec3(1,support_height,1)); 
     Matrices.model = translate*scale;
     MVP = VP * Matrices.model;
     glUniformMatrix4fv(Matrices.MatrixID, 1, GL_FALSE, &MVP[0][0]);
-    draw3DObject(support);
+    draw3DObject(support);   
 
     translate = glm::translate (glm::vec3(ballx,bally, 0));        // glTranslatef
     Matrices.model = translate;
@@ -39,23 +41,20 @@ void draw (){
     glUniformMatrix4fv(Matrices.MatrixID, 1, GL_FALSE, &MVP[0][0]);
     draw3DObject(ball);
 
-	translate = glm::translate (glm::vec3(-6.7f, base_position, 0));        // glTranslatef
+	translate = glm::translate (glm::vec3(-68.0f, base_position, 0));        // glTranslatef
 	Matrices.model = translate;
 	MVP = VP * Matrices.model;
 	glUniformMatrix4fv(Matrices.MatrixID, 1, GL_FALSE, &MVP[0][0]);
 	draw3DObject(base);
 
-    ballx+=velocity*cos(shoot_angle)*shoot_time;
-    bally+=velocity*sin(shoot_angle)*shoot_time-gravity*shoot_time*shoot_time/2.0;
-    shoot_time+=0.085;
 }
 
 
 
 int main (int argc, char** argv)
 {
-	int width = 1000;
-	int height = 600;
+	int width = 1362;
+	int height = 710;
 
 	GLFWwindow* window = initGLFW(width, height);
 
@@ -65,25 +64,19 @@ int main (int argc, char** argv)
 
 	/* Draw in loop */
 	while (!glfwWindowShouldClose(window)) {
-
-		// OpenGL Draw commands
 		draw();
-
-		// Swap Frame Buffer in double buffering
 		glfwSwapBuffers(window);
-
-		// Poll for Keyboard and mouse events
 		glfwPollEvents();
 
-		// Control based on time (Time based transformation like 5 degrees rotation every 0.5s)
-		current_time = glfwGetTime(); // Time in seconds
-		if ((current_time - last_update_time) >= 0.5) { // atleast 0.5s elapsed since last frame
-			// do something every 0.5 seconds ..
-            //shoot_time+=0.5;
-			last_update_time = current_time;
-		}
-	}
+		current_time = glfwGetTime(); 
+		if ((current_time - last_update_time) >= 0.05) { 
+           ballx+=velocity*cos(shoot_angle)*shoot_time;
+           bally+=velocity*sin(shoot_angle)*shoot_time-gravity*shoot_time*shoot_time/2.0;
+           shoot_time+=0.1;
+           last_update_time = current_time;
+       }
+   }
 
-	glfwTerminate();
-	exit(EXIT_SUCCESS);
+   glfwTerminate();
+   exit(EXIT_SUCCESS);
 }

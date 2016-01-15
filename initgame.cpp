@@ -10,7 +10,7 @@ void reshapeWindow (GLFWwindow* window, int width, int height)
 
 	glViewport (0, 0, (GLsizei) fbwidth, (GLsizei) fbheight);
 
-	Matrices.projection = glm::ortho(-7.0f, 7.0f, -4.0f, 4.0f, 0.1f, 500.0f);
+	Matrices.projection = glm::ortho(-77.0f, 77.0f, -40.0f, 40.0f, 0.1f, 500.0f);
 }
 
 GLFWwindow* initGLFW (int width, int height)

@@ -5,7 +5,7 @@ using namespace std;
 VAO *cannon,*base;
 VAO *support,*ball;
 
-float radius=0.064;
+float radius=0.5;
 void createBall(){
 	GLfloat vertex_buffer_data [9005];
 	int j=0;
@@ -32,13 +32,13 @@ void createBall(){
 
 void createSupport (){
 	static const GLfloat vertex_buffer_data [] = {
-		0.125,1,0,
-		-0.125,1,0, 
-		-0.125,0,0, 
+		1.5,2.5,0,
+		-1.5,2.5,0, 
+		-1.5,0,0, 
 
-		0.125,0,0, 
-		-0.125,0,0, 
-		0.125,1,0  
+		1.5,0,0, 
+		-1.5,0,0, 
+		1.5,2.5,0  
 	};
 	static const GLfloat color_buffer_data [] = {
 		0.85,0.85,0.85,
@@ -54,13 +54,13 @@ void createSupport (){
 
 void createCannon (){
 	static const GLfloat vertex_buffer_data [] = {
-		2,0.0625,0,
-		2,-0.0625,0, 
-		0, -0.0625,0, 
+		16,0.5,0,
+		16,-0.5,0, 
+		0,-0.5,0, 
 
-		2, 0.0625,0, 
-		0, -0.0625,0, 
-		0,0.0625,0  
+		16,0.5,0, 
+		0,-0.5,0, 
+		0,0.5,0  
 	};
 	static const GLfloat color_buffer_data [] = {
 		0.5,0.5,0.5, 
@@ -76,13 +76,13 @@ void createCannon (){
 
 void createBase (){
 	static const GLfloat vertex_buffer_data [] = {
-		2,-1,0,
-		2,0.05,0, 
-		0,-1,0, 
+		8,-5,0,
+		8,2,0, 
+		-8,-5,0, 
 
-		0,-1,0, 
-		2,0.05,0, 
-		0,0.05,0
+		-8,-5,0, 
+		8,2,0, 
+		-8,2,0
 	};
 	static const GLfloat color_buffer_data [] = {
 		0.8,0.8,0.8, 
