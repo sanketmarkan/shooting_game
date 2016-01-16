@@ -1,4 +1,6 @@
 #include "controls.cpp"
+std::vector<target> target_list;
+
 
 void reshapeWindow (GLFWwindow* window, int width, int height)
 {
@@ -53,6 +55,18 @@ void initGL (GLFWwindow* window, int width, int height)
 	createBase ();
 	createSupport ();
 	createBall ();
+	int x=rand()%10+1;
+	while(x<4)
+		x=rand()%10+1;
+	for(int i=0;i<x;i++){
+		int r=rand()%2+3;
+		target x=createTarget(r);
+		r=rand()%70+1;
+		x.x=r;
+		r=rand()%70+1;
+		x.y=r-35;
+		target_list.push_back(x);
+	}
 	programID = LoadShaders( "Sample_GL.vert", "Sample_GL.frag" );
 	Matrices.MatrixID = glGetUniformLocation(programID, "MVP");
 	reshapeWindow (window, width, height);

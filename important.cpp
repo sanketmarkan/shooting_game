@@ -32,6 +32,12 @@ struct GLMatrices {
 	GLuint MatrixID;
 } Matrices;
 
+struct target{
+	float x,y,radius;
+	VAO *vao;
+};
+typedef struct target target;
+
 GLuint programID;
 
 GLuint LoadShaders(const char * vertex_file_path,const char * fragment_file_path) {
