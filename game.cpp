@@ -4,11 +4,15 @@
 using namespace std;
 
 
+GLFWwindow* window;
+
 float sq(float x){
 	return (float) x*x;
 }
 
 void draw (){
+	    float theta = (float)(rectangle_rotation*M_PI/180.0);
+
 	glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glUseProgram (programID);
@@ -31,6 +35,11 @@ void draw (){
 	draw3DObject(cannon);
 
 
+	translate = glm::translate (glm::vec3(30*cos(theta)-70.0,30*sin(theta)+base_position+1, 0));        // glTranslatef
+    Matrices.model = translate;
+    MVP = VP * Matrices.model;
+    glUniformMatrix4fv(Matrices.MatrixID, 1, GL_FALSE, &MVP[0][0]);
+    draw3DObject(cross);
 
     translate = glm::translate (glm::vec3(-68.0f,-42, 0));        // glTranslatef
     glm::mat4 scale = glm::scale (glm::vec3(1,support_height,1)); 
@@ -53,14 +62,42 @@ void draw (){
 	glUniformMatrix4fv(Matrices.MatrixID, 1, GL_FALSE, &MVP[0][0]);
 	draw3DObject(ball);
 
+	for(int i=0;i<target_list.size();i++){
+		int h= 40-target_list[i].y;
+		cout<<h<<endl;
+		scale = glm::scale (glm::vec3(0.6,h,1)); 
+    	translate = glm::translate (glm::vec3(target_list[i].x,40, 0));        // glTranslatef
+    	Matrices.model = translate*scale;
+    	MVP = VP * Matrices.model;
+    	glUniformMatrix4fv(Matrices.MatrixID, 1, GL_FALSE, &MVP[0][0]);
+    	draw3DObject(rope);
+    }
 
 	for(int i=0;i<target_list.size();i++){
     	translate = glm::translate (glm::vec3(target_list[i].x,target_list[i].y, 0));        // glTranslatef
- 	   	Matrices.model = translate;
+    	Matrices.model = translate;
     	MVP = VP * Matrices.model;
-	    glUniformMatrix4fv(Matrices.MatrixID, 1, GL_FALSE, &MVP[0][0]);
+    	glUniformMatrix4fv(Matrices.MatrixID, 1, GL_FALSE, &MVP[0][0]);
     	draw3DObject(target_list[i].vao);
-	}
+    }
+
+    double xpos, ypos;
+    int width,height;
+    glfwGetCursorPos(window,&xpos, &ypos);
+    glfwGetFramebufferSize(window, &width, &height);
+    xpos=-77+(float)154.0/width*xpos;
+    ypos=-40+(float)80.0/height*ypos;
+    ypos*=-1;
+    cout<<xpos<<" "<<ypos<<endl;
+    float x=-70.0;
+    float y=base_position+1;
+    cout<<x<<" ** "<<y<<endl;
+    rectangle_rotation = atan2 (ypos-y,xpos-x) * 180 / M_PI;
+    cout<<rectangle_rotation<<endl;
+    if(rectangle_rotation<0)
+    	rectangle_rotation=0;
+    if(rectangle_rotation>90)
+    	rectangle_rotation=90;
 }
 
 
@@ -70,8 +107,7 @@ int main (int argc, char** argv)
 	glutInit(&argc, argv);
 	int width = glutGet(GLUT_SCREEN_WIDTH);;
 	int height = glutGet(GLUT_SCREEN_HEIGHT);
-
-	GLFWwindow* window = initGLFW(width, height);
+	window = initGLFW(width, height);
 
 	initGL (window, width, height);
 
@@ -79,24 +115,26 @@ int main (int argc, char** argv)
 
 	/* Draw in loop */
 	while (!glfwWindowShouldClose(window)) {
-		draw();
+		draw();		
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 
 		current_time = glfwGetTime(); 
 		if ((current_time - last_update_time) >= 0.08){
 			float theta = shoot_angle;
-			ballx=velocity*cos(shoot_angle)*shoot_time;
+			ballx+=velocityx*0.25;
 			bally=shoot?velocity*sin(shoot_angle)*shoot_time-gravity*shoot_time*shoot_time/2.0:-45.0;
 			for(int i=0;i<target_list.size();i++){
 				float dis=sqrt(sq(ballx+tranx-target_list[i].x)+sq(bally+trany-target_list[i].y));
 				//cout<<dis<<" "<<radius+target_list[i].radius<<endl;
 				if(dis<radius+target_list[i].radius){
+					velocityx*=-0.4;
 					target_list.erase(target_list.begin() + i);
 					break;
 				}
 			}
 			shoot_time+=0.25;
+			cout<<ballx<<endl;
 			//cout<<(initial_velocity-3)*4<<" "<<initial_velocity<<endl;
 			last_update_time = current_time;
 		}

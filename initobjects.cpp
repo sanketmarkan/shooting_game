@@ -2,8 +2,8 @@
 
 using namespace std;
 
-VAO *cannon,*base;
-VAO *support,*ball;
+VAO *cannon,*base,*rope;
+VAO *support,*ball,*cross;
 
 float radius=0.5;
 void createBall(){
@@ -27,6 +27,31 @@ void createBall(){
 	ball = create3DObject(GL_TRIANGLES, 3000, vertex_buffer_data, color_buffer_data, GL_LINE);
 }
 
+void createCross(){
+	static const GLfloat vertex_buffer_data [] = {
+		1,0,0,
+		2,0,0,
+		2,0,0,
+
+		-1,0,0,
+		-2,0,0,
+		-2,0,0,
+
+		0,1,0,
+		0,2,0,
+		0,2,0,
+
+		0,-1,0,
+		0,-2,0,
+		0,-2,0,
+	};
+	GLfloat color_buffer_data [40];
+	for(int i=0;i<36;i++)
+		color_buffer_data[i]=0;
+	cross = create3DObject(GL_TRIANGLES,12, vertex_buffer_data, color_buffer_data, GL_LINE);
+}
+
+
 void createSupport (){
 	static const GLfloat vertex_buffer_data [] = {
 		1.5,2.5,0,
@@ -48,6 +73,31 @@ void createSupport (){
 	};
 	support = create3DObject(GL_TRIANGLES, 6, vertex_buffer_data, color_buffer_data, GL_FILL);
 }
+
+
+void createRope(){
+	static const GLfloat vertex_buffer_data [] = {
+		0,0,0,
+		0,-1,0,
+		0.5,0,0,
+
+		0.5,0,0,
+		0.5,-1,0,
+		0,-1,0,
+	};
+	static const GLfloat color_buffer_data [] = {
+		0,0,0,
+		0,0,0,
+		0,0,0,
+
+				0,0,0,
+		0,0,0,
+		0,0,0,
+
+	};
+	rope = create3DObject(GL_TRIANGLES, 6, vertex_buffer_data, color_buffer_data, GL_FILL);
+}
+
 
 void createCannon (){
 	static const GLfloat vertex_buffer_data [] = {

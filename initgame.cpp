@@ -23,7 +23,6 @@ GLFWwindow* initGLFW (int width, int height)
 	if (!glfwInit()) {
 		exit(EXIT_FAILURE);
 	}
-
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
@@ -52,9 +51,12 @@ GLFWwindow* initGLFW (int width, int height)
 void initGL (GLFWwindow* window, int width, int height)
 {
 	createCannon ();
+	createCross ();
 	createBase ();
 	createSupport ();
 	createBall ();
+	createRope ();
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 	int x=rand()%10+1;
 	while(x<4)
 		x=rand()%10+1;
@@ -70,7 +72,6 @@ void initGL (GLFWwindow* window, int width, int height)
 	programID = LoadShaders( "Sample_GL.vert", "Sample_GL.frag" );
 	Matrices.MatrixID = glGetUniformLocation(programID, "MVP");
 	reshapeWindow (window, width, height);
-
 	glClearColor (0.3f, 0.3f, 0.3f, 0.0f); // R, G, B, A
 	glClearDepth (1.0f);
 

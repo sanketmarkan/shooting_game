@@ -5,7 +5,7 @@ float rectangle_rotation = 5;
 float rotate_angle=5,shoot_angle;
 float ballx,bally=-45,tranx,trany;
 float gravity=3,shoot_time;
-float initial_velocity=15,velocity;
+float initial_velocity=15,velocity,velocityx;
 int shoot;
 
 
@@ -15,16 +15,6 @@ void keyboard (GLFWwindow* window, int key, int scancode, int action, int mods)
 	float theta;
 	if (action == GLFW_RELEASE) {
 		switch (key) {
-			case GLFW_KEY_UP:
-				rectangle_rotation+=rotate_angle;
-				if(rectangle_rotation>90)
-					rectangle_rotation=90;
-				break;
-			case GLFW_KEY_DOWN:
-				rectangle_rotation-=rotate_angle;
-				if(rectangle_rotation<5)
-					rectangle_rotation=5;
-				break;
 			case GLFW_KEY_W:
 				if(support_height<8){
 					support_height+=1.5;
@@ -45,6 +35,8 @@ void keyboard (GLFWwindow* window, int key, int scancode, int action, int mods)
 					tranx = 16*cos(theta)-70.0;
 					trany = 16*sin(theta)+base_position+1;
 					velocity = initial_velocity;
+					velocityx = velocity * cos(theta);
+					ballx = -1*velocityx*0.25;
 					shoot_time=0;
 				}
 				break;
