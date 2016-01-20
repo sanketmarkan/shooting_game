@@ -4,10 +4,9 @@ float support_height = 1;
 float rectangle_rotation = 5;
 float rotate_angle=5,shoot_angle;
 float ballx,bally=-45,tranx,trany;
-float gravity=3,shoot_time;
+float gravity=3,shoot_time,maxangle=15;
 float initial_velocity=15,velocity,velocityx;
-int shoot;
-
+int shoot,str,stl,flag[15];
 
 
 void keyboard (GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -29,6 +28,8 @@ void keyboard (GLFWwindow* window, int key, int scancode, int action, int mods)
 				break;
 			case GLFW_KEY_SPACE:
 				if(bally<=-42){
+					for(int i=0;i<10;i++)
+						flag[i]=0;
 					shoot=1;
 					theta = (float)(rectangle_rotation*M_PI/180.0);
 					shoot_angle = theta;
@@ -41,12 +42,10 @@ void keyboard (GLFWwindow* window, int key, int scancode, int action, int mods)
 				}
 				break;
 			case GLFW_KEY_RIGHT:
-				if(initial_velocity<27.99)
-					initial_velocity+=0.25;
+				str=0;
 				break;
 			case GLFW_KEY_LEFT:
-				if(initial_velocity>3.001)
-					initial_velocity-=0.25;
+				stl=0;
 				break;
 			default:
 				break;
@@ -56,6 +55,12 @@ void keyboard (GLFWwindow* window, int key, int scancode, int action, int mods)
 		switch (key) {
 			case GLFW_KEY_ESCAPE:
 				quit(window);
+				break;
+			case GLFW_KEY_RIGHT:
+				str=1;
+				break;
+			case GLFW_KEY_LEFT:
+				stl=1;
 				break;
 			default:
 				break;

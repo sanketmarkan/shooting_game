@@ -34,6 +34,7 @@ struct GLMatrices {
 
 struct target{
 	float x,y,radius;
+	int dir;
 	VAO *vao;
 };
 typedef struct target target;

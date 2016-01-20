@@ -1,6 +1,6 @@
 #include <GL/glut.h>
-std::vector<VAO*> v;
-int x=40,y;
+std::vector<VAO*> v[2];
+int x,y,mode;
 float lead,centd,segd;
 static const GLfloat color_buffer_data [] = {
         0.85,0.85,0.85,
@@ -8,13 +8,13 @@ static const GLfloat color_buffer_data [] = {
         0.85,0.85,0.85,
 };
 void line(float x1, float y1,float x2, float y2){
-        cout<<x1<<" "<<y1<<" "<<x2<<" "<<y2<<endl;
+        //cout<<x1<<" "<<y1<<" "<<x2<<" "<<y2<<endl;
         GLfloat vertex_buffer_data [] = {
                 x1,y1,0,
                 x1,y1,0, 
                 x2,y2,0, 
         };
-        v.push_back(create3DObject(GL_TRIANGLES, 3, vertex_buffer_data, color_buffer_data, GL_LINE));
+        v[mode].push_back(create3DObject(GL_TRIANGLES, 3, vertex_buffer_data, color_buffer_data, GL_LINE));
 }
 
 void drawSubDigit(int i){
@@ -120,6 +120,9 @@ void drawDigit(int digit){
 }
 
 void getScore(int value){
+        x=40;
+        y=0;
+        mode=0;
         int flag0=0;
         if(value==0)
                 drawDigit(0);
@@ -133,12 +136,53 @@ void getScore(int value){
         x--;
         while (value!=0){
                 x-=centd;
-                cout<<x<<endl;
                 drawDigit(value%10);
                 value = value/10;
         }
         if(flag0==1){
                 drawDigit(-1);
         }
-        x=40;
+}
+
+void getSpeed(int value){
+        x=-70;
+        y=32;
+        mode=1;
+        centd= 2.5;
+        segd = 1 ;
+        int pvalue=value;
+        x-=centd+1;
+        if(value==0){
+                drawDigit(0);
+                x-=centd;
+        }
+        while (value!=0){
+                drawDigit(value%10);
+                x-=centd;
+                value = value/10;
+        }
+        if(pvalue<10)
+                drawDigit(0);
+        y=37;x=-75;
+        drawDigit(5);
+        x+=centd;
+        drawSubDigit(3);
+        drawSubDigit(5);
+        drawSubDigit(1);
+        drawSubDigit(6);
+        drawSubDigit(4);
+        x+=centd;
+        drawSubDigit(5);
+        drawSubDigit(3);
+        drawSubDigit(6);
+        drawSubDigit(4);
+        drawSubDigit(7);
+        x+=centd;
+        drawSubDigit(5);
+        drawSubDigit(3);
+        drawSubDigit(6);
+        drawSubDigit(4);
+        drawSubDigit(7);
+        x+=centd;
+        drawDigit(0);
 }
