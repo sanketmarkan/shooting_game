@@ -38,6 +38,15 @@ struct target{
 };
 typedef struct target target;
 
+
+struct obstacles{
+	float x,y,len,bre;
+	int dir;
+	VAO *vao;	
+};
+typedef struct obstacles obstacles;
+
+
 GLuint programID;
 
 GLuint LoadShaders(const char * vertex_file_path,const char * fragment_file_path) {

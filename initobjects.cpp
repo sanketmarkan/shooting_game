@@ -75,6 +75,36 @@ void createSupport (){
 }
 
 
+obstacles createObstacles(float x,float y,float wid,float len,int dir){
+	static const GLfloat vertex_buffer_data [] = {
+		wid,0,0,
+		0,0,0,
+		0,-1*len,0,
+
+		wid,0,0,
+		0,-1*len,0,
+		wid,-1*len,0,
+	};
+	static const GLfloat color_buffer_data [] = {
+		0.85,0.85,0.85,
+		0.85,0.85,0.85,
+		0.85,0.85,0.85,
+
+		0.85,0.85,0.85,
+		0.85,0.85,0.85,
+		0.85,0.85,0.85,
+	};
+	obstacles z;
+	z.vao= create3DObject(GL_TRIANGLES, 6, vertex_buffer_data, color_buffer_data, GL_FILL);
+	z.x=x;
+	z.len=len;
+	z.bre=wid;
+	z.y=y;
+	z.dir=dir;
+	return z;
+}
+
+
 void createRope(){
 	static const GLfloat vertex_buffer_data [] = {
 		0,0,0,

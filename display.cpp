@@ -1,39 +1,41 @@
 #include <GL/glut.h>
 
-int x=50,y=50,flag0=0;
-void line(float x1, float y1,
-        float x2, float y2){
-
-        glColor3f(1,1,1);
-        glLineWidth(10);
-        glBegin(GL_LINES);
-        glVertex2f(x1, y1);
-        glVertex2f(x2, y2);
-        glEnd();
-        glLineWidth(2);
-
+int x=0,y=0,flag0=0;
+void line(float x1, float y1,float x2, float y2){
+        static const GLfloat vertex_buffer_data [] = {
+                x1,y1,0,
+                x2,y2,0, 
+                x1,y1,0, 
+        };
+        static const GLfloat color_buffer_data [] = {
+                0.85,0.85,0.85,
+                0.85,0.85,0.85,
+                0.85,0.85,0.85,
+        };
+        cout<<x1<<" "<<y1<<" "<<x2<<" "<<y2<<endl;
+        VAO* line = create3DObject(GL_TRIANGLES, 3, vertex_buffer_data, color_buffer_data, GL_FILL);
+        draw3DObject(line);
 }
 
 void drawSubDigit(int i){
-
+        cout<<i<<endl;
         if(i==1)
-                line(x,y+0.3,x,y);
+                line(x,y+3,x,y);
         if(i==2)
-                line(x,y,x,y-0.3);
+                line(x,y,x,y-3);
         if(i==3)
-                line(x-0.3,y+0.3,x-0.3,y);
+                line(x-3,y+3,x-3,y);
         if(i==4)
-                line(x-0.3,y,x-0.3,y-0.3);
+                line(x-3,y,x-3,y-3);
         if(i==5)
-                line(x,y+0.3,x-0.3,y+0.3);
+                line(x,y+3,x-3,y+3);
         if(i==6)
-                line(x,y,x-0.3,y);
+                line(x,y,x-3,y);
         if(i==7)
-                line(x,y-0.3,x-0.3,y-0.3);
+                line(x,y-3,x-3,y-3);
 }
 
 void drawDigit(int digit){
-
         if(digit==-1){
                 drawSubDigit(6);
         }
@@ -129,14 +131,14 @@ void getScore(int value){
         while (value!=0){
                 drawDigit(value%10);
                 value = value/10;
-                x=x-0.7;
+                x=x-5;
                 y=0;
         }
         if(flag0==1){
                 drawDigit(-1);
         }
 
-        x=-3.5;
+        x=0;
         y=0;
 }
 
