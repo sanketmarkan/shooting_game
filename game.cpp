@@ -35,12 +35,15 @@ void draw (){
 	glUniformMatrix4fv(Matrices.MatrixID, 1, GL_FALSE, &MVP[0][0]);
 	draw3DObject(cannon);
 
-	translate = glm::translate (glm::vec3(0,0,0));        // glTranslatef
-	Matrices.model = translate;
-	MVP = VP * Matrices.model;
-	glUniformMatrix4fv(Matrices.MatrixID, 1, GL_FALSE, &MVP[0][0]);
-	getScore(0);
 
+	for(int i=0;i<v.size();i++){
+		translate = glm::translate (glm::vec3(0,0,0));        // glTranslatef
+		Matrices.model = translate;
+		MVP = VP * Matrices.model;
+		glUniformMatrix4fv(Matrices.MatrixID, 1, GL_FALSE, &MVP[0][0]);
+		draw3DObject(v[i]);
+	}
+	
 	translate = glm::translate (glm::vec3(30*cos(theta)-70.0,30*sin(theta)+base_position+1, 0));        // glTranslatef
 	Matrices.model = translate;
 	MVP = VP * Matrices.model;
@@ -102,6 +105,7 @@ void draw (){
     xpos=-77+(float)154.0/width*xpos;
     ypos=-40+(float)80.0/height*ypos;
     ypos*=-1;
+    //cout<<xpos<<" "<<ypos<<endl;
     float x=-70.0;
     float y=base_position+1;
     rectangle_rotation = atan2 (ypos-y,xpos-x) * 180 / M_PI;
@@ -124,6 +128,7 @@ int main (int argc, char** argv)
 
 	double last_update_time = glfwGetTime(), current_time;
 
+	int score=0;
 	/* Draw in loop */
 	while (!glfwWindowShouldClose(window)) {
 		draw();		
@@ -133,6 +138,8 @@ int main (int argc, char** argv)
 		current_time = glfwGetTime(); 
 		if ((current_time - last_update_time) >= 0.08){
 			float theta = shoot_angle;
+			v.clear();
+			getScore(score++);
 			ballx+=velocityx*0.25;
 			bally=shoot?velocity*sin(shoot_angle)*shoot_time-gravity*shoot_time*shoot_time/2.0:-45.0;
 			for(int i=0;i<target_list.size();i++){
