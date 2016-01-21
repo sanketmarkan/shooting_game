@@ -7,9 +7,6 @@ using namespace std;
 
 GLFWwindow* window;
 
-float sq(float x){
-	return (float) x*x;
-}
 
 void draw (){
 	float theta = (float)(rectangle_rotation*M_PI/180.0);
@@ -182,7 +179,7 @@ int main (int argc, char** argv)
 
 	initGL (window, width, height);
 
-	double last_update_time = glfwGetTime(), current_time;
+	double last_update_time = glfwGetTime(),last_time=glfwGetTime(),current_time;
 
 	getSpeed((initial_velocity-3)*4);
 	int score=0;
@@ -191,8 +188,13 @@ int main (int argc, char** argv)
 		draw();		
 		glfwSwapBuffers(window);
 		glfwPollEvents();
-
-		current_time = glfwGetTime(); 
+		//cout<<rot_list.size()+target_list.size()<<endl;
+		current_time = glfwGetTime();
+		if((current_time-last_time) >=5){
+			if(rot_list.size()+target_list.size()<8)
+				makeTarget();
+			last_time=current_time;
+		}
 		if ((current_time - last_update_time) >= 0.08){
 			if(stl){
 				if(initial_velocity>3.001){
@@ -227,10 +229,10 @@ int main (int argc, char** argv)
 				if(abs(rot_list[i].second)>maxangle)
 					rot_list[i].first.dir*=-1;
 			}
-			
+
 			float theta = shoot_angle;
-			v[0].clear();
-			getScore(score++);
+			//v[0].clear();
+			//getScore(score++);
 			ballx+=velocityx*0.25;
 			bally=shoot?velocity*sin(shoot_angle)*shoot_time-gravity*shoot_time*shoot_time/2.0:-45.0;
 			

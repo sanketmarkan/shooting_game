@@ -3,6 +3,11 @@ std::vector<target> target_list;
 std::vector<pair<target,float> > rot_list;
 std::vector<obstacles> obstacles_list;
 
+
+float sq(float x){
+	return (float) x*x;
+}
+
 void reshapeWindow (GLFWwindow* window, int width, int height)
 {
 	int fbwidth=width, fbheight=height;
@@ -49,6 +54,33 @@ GLFWwindow* initGLFW (int width, int height)
 	return window;
 }
 
+void makeTarget(){
+	int st=1,x,y,r=rand()%2+3;
+	x=rand()%70+1;
+	y=rand()%60+1;
+	y-=30;
+	while(st){
+		st=0;
+		for(int i=0;i<target_list.size();i++){
+			float dis=sqrt(sq((float)(x-target_list[i].x))+sq(((float)y-target_list[i].y)));
+			if(dis<r+target_list[i].radius){
+				r=rand()%2+3;
+				x=rand()%70+1;
+				y=rand()%60+1;
+				cout<<"collision"<<endl;
+				st=1;
+				break;
+			}
+		}
+	}
+	cout<<r<<" "<<x<<" "<<y<<endl;
+	target xx=createTarget(r);
+	xx.x=x;
+	xx.y=y;
+	target_list.push_back(xx);
+}
+
+
 void initGL (GLFWwindow* window, int width, int height)
 {
 	createCannon ();
@@ -60,18 +92,12 @@ void initGL (GLFWwindow* window, int width, int height)
 	obstacles_list.push_back(createObstacles (-10,0,3,25,1));
 	obstacles_list.push_back(createObstacles (-19,25,3,25,-1));
 //	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
-	int x=rand()%10+1;
-	while(x<4)
-		x=rand()%10+1;
-	for(int i=0;i<x;i++){
-		int r=rand()%2+3;
-		target x=createTarget(r);
-		r=rand()%70+1;
-		x.x=r;
-		r=rand()%70+1;
-		x.y=r-35;
-		target_list.push_back(x);
-	}
+	int x=rand()%3+3;
+	while(x<3)
+		x=rand()%3+3;
+	for(int i=0;i<x;i++)
+		makeTarget();
+	
 	programID = LoadShaders( "Sample_GL.vert", "Sample_GL.frag" );
 	Matrices.MatrixID = glGetUniformLocation(programID, "MVP");
 	reshapeWindow (window, width, height);
