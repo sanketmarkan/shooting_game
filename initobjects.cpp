@@ -2,8 +2,8 @@
 
 using namespace std;
 
-VAO *cannon,*base,*rope;
-VAO *support,*ball,*cross;
+VAO *cannon,*base,*rope,*missile;
+VAO *support,*ball,*cross,*tries,*exc;
 
 float radius=0.5;
 void createBall(){
@@ -26,6 +26,129 @@ void createBall(){
 		color_buffer_data[i]=0;
 	ball = create3DObject(GL_TRIANGLES, 3000, vertex_buffer_data, color_buffer_data, GL_LINE);
 }
+
+
+void createExc(){
+	GLfloat vertex_buffer_data [9105];
+	int j=0;
+	for(int i=0;i<1000;i++){
+		vertex_buffer_data[j++]=radius*cos(2*3.14159*i/1000.0);
+		vertex_buffer_data[j++]=radius*sin(2*3.14159*i/1000.0);
+		vertex_buffer_data[j++]=0;
+		vertex_buffer_data[j++]=radius*cos(2*3.14159*(i+1)/1000.0);
+		vertex_buffer_data[j++]=radius*sin(2*3.14159*(i+1)/1000.0);
+		vertex_buffer_data[j++]=0;
+		vertex_buffer_data[j++]=0;
+		vertex_buffer_data[j++]=0;
+		vertex_buffer_data[j++]=0;
+	}
+	vertex_buffer_data[j++]=-0.5;
+	vertex_buffer_data[j++]= 1;
+	vertex_buffer_data[j++]= 0;
+	
+	vertex_buffer_data[j++]=0.5;
+	vertex_buffer_data[j++]=1;
+	vertex_buffer_data[j++]=0;
+
+	vertex_buffer_data[j++]=0.5;
+	vertex_buffer_data[j++]=4;
+	vertex_buffer_data[j++]=0;
+
+	vertex_buffer_data[j++]=-0.5;
+	vertex_buffer_data[j++]= 1;
+	vertex_buffer_data[j++]= 0;
+	
+	vertex_buffer_data[j++]=0.5;
+	vertex_buffer_data[j++]=4;
+	vertex_buffer_data[j++]=0;
+
+	vertex_buffer_data[j++]=-0.5;
+	vertex_buffer_data[j++]=4;
+	vertex_buffer_data[j++]=0;
+
+	GLfloat color_buffer_data [9105];
+	for(int i=0;i<9018;i++)
+		color_buffer_data[i]=0;
+	exc = create3DObject(GL_TRIANGLES, 3006, vertex_buffer_data, color_buffer_data, GL_FILL);
+}
+
+void createTry(){
+	GLfloat vertex_buffer_data [9005];
+	int j=0;
+	for(int i=0;i<1000;i++){
+		vertex_buffer_data[j++]=radius*cos(2*3.14159*i/1000.0);
+		vertex_buffer_data[j++]=radius*sin(2*3.14159*i/1000.0);
+		vertex_buffer_data[j++]=0;
+		vertex_buffer_data[j++]=radius*cos(2*3.14159*(i+1)/1000.0);
+		vertex_buffer_data[j++]=radius*sin(2*3.14159*(i+1)/1000.0);
+		vertex_buffer_data[j++]=0;
+		vertex_buffer_data[j++]=0;
+		vertex_buffer_data[j++]=0;
+		vertex_buffer_data[j++]=0;
+	}
+
+	GLfloat color_buffer_data [9005];
+	for(int i=0;i<9000;i++)
+		color_buffer_data[i]=1;
+	tries = create3DObject(GL_TRIANGLES, 3000, vertex_buffer_data, color_buffer_data, GL_LINE);
+}
+
+
+void createMissile(){
+	static const GLfloat vertex_buffer_data [] = {
+		-10,-1,0,
+		-10,1,0,
+		10,1,0,
+
+		10,1,0,
+		10,-1,0,
+		-10,-1,0,
+
+		-13,0,0,
+		-10,1,0,
+		-10,-1,0,
+
+		9,3,0,
+		9,1,0,
+		7,1,0,
+
+		9,-3,0,
+		9,-1,0,
+		7,-1,0,
+
+		9,0,0,
+		7,0,0,
+		12,-0.8,0,
+	};
+	static const GLfloat color_buffer_data [] = {
+		0.5,0.5,0.5, 
+		0.5,0.5,0.5, 
+		0.5,0.5,0.5, 
+
+		0.5,0.5,0.5, 
+		0.5,0.5,0.5, 
+		0.5,0.5,0.5,
+
+
+		0.7,0.7,0.7, 
+		0.7,0.7,0.7, 
+		0.7,0.7,0.7,
+
+		0.7,0.7,0.7, 
+		0.7,0.7,0.7, 
+		0.7,0.7,0.7,
+
+		0.7,0.7,0.7, 
+		0.7,0.7,0.7, 
+		0.7,0.7,0.7,
+
+		0.7,0.7,0.7, 
+		0.7,0.7,0.7, 
+		0.7,0.7,0.7,
+	};
+	missile = create3DObject(GL_TRIANGLES, 18, vertex_buffer_data, color_buffer_data, GL_FILL);
+}
+
 
 void createCross(){
 	static const GLfloat vertex_buffer_data [] = {
@@ -120,7 +243,7 @@ void createRope(){
 		0,0,0,
 		0,0,0,
 
-				0,0,0,
+		0,0,0,
 		0,0,0,
 		0,0,0,
 

@@ -67,13 +67,13 @@ void makeTarget(){
 				r=rand()%2+3;
 				x=rand()%70+1;
 				y=rand()%60+1;
-				cout<<"collision"<<endl;
+				y-=30;
 				st=1;
 				break;
 			}
 		}
 	}
-	cout<<r<<" "<<x<<" "<<y<<endl;
+	//cout<<r<<" "<<x<<" "<<y<<endl;
 	target xx=createTarget(r);
 	xx.x=x;
 	xx.y=y;
@@ -84,12 +84,16 @@ void makeTarget(){
 void initGL (GLFWwindow* window, int width, int height)
 {
 	createCannon ();
+	createMissile ();
 	createCross ();
 	createBase ();
 	createSupport ();
+	createExc ();
 	createBall ();
 	createRope ();
-	obstacles_list.push_back(createObstacles (-10,0,3,25,1));
+	createTry ();
+	obstacles_list.push_back
+	(createObstacles (-10,0,3,25,1));
 	obstacles_list.push_back(createObstacles (-19,25,3,25,-1));
 //	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 	int x=rand()%3+3;

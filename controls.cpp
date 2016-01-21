@@ -6,8 +6,9 @@ float rotate_angle=5,shoot_angle;
 float ballx,bally=-45,tranx,trany;
 float gravity=3,shoot_time,maxangle=15;
 float initial_velocity=15,velocity,velocityx;
-int shoot,str,stl,flag[15];
-
+float misx=-89,misy,velx=6.5;
+int flagg,shoot,str,stl,flag[15],trys=20,shoo,isshoot;
+//std::vector<pair<float,float> > trace;
 
 void keyboard (GLFWwindow* window, int key, int scancode, int action, int mods)
 {
@@ -30,6 +31,8 @@ void keyboard (GLFWwindow* window, int key, int scancode, int action, int mods)
 				if(bally+trany<=-42 || ballx+tranx>=80 || ballx+tranx<=-80){
 					for(int i=0;i<10;i++)
 						flag[i]=0;
+					trys--;
+					//trace.clear();
 					shoot=1;
 					theta = (float)(rectangle_rotation*M_PI/180.0);
 					shoot_angle = theta;

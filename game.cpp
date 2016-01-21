@@ -6,7 +6,7 @@ using namespace std;
 
 
 GLFWwindow* window;
-
+int score;
 
 void draw (){
 	float theta = (float)(rectangle_rotation*M_PI/180.0);
@@ -31,7 +31,6 @@ void draw (){
 	MVP = VP * Matrices.model;
 	glUniformMatrix4fv(Matrices.MatrixID, 1, GL_FALSE, &MVP[0][0]);
 	draw3DObject(cannon);
-
 
 	for(int i=0;i<v[0].size();i++){
 		translate = glm::translate (glm::vec3(0,0,0));        // glTranslatef
@@ -76,9 +75,18 @@ void draw (){
 	glUniformMatrix4fv(Matrices.MatrixID, 1, GL_FALSE, &MVP[0][0]);
 	draw3DObject(ball);
 
-	for(int i=0;i<target_list.size();i++){
-		int h= 40-target_list[i].y;
-		scale = glm::scale (glm::vec3(0.6,h,1)); 
+
+	for(int i=0;i<obstacles_list.size();i++){
+    	translate = glm::translate (glm::vec3(obstacles_list[i].x,obstacles_list[i].y, 0));        // glTranslatef
+    	Matrices.model = translate;
+    	MVP = VP * Matrices.model;
+    	glUniformMatrix4fv(Matrices.MatrixID, 1, GL_FALSE, &MVP[0][0]);
+    	draw3DObject(obstacles_list[i].vao);
+    }
+
+    for(int i=0;i<target_list.size();i++){
+    	int h= 40-target_list[i].y;
+    	scale = glm::scale (glm::vec3(0.6,h,1)); 
     	translate = glm::translate (glm::vec3(target_list[i].x,40, 0));        // glTranslatef
     	Matrices.model = translate*scale;
     	MVP = VP * Matrices.model;
@@ -116,12 +124,29 @@ void draw (){
     	draw3DObject(rot_list[i].first.vao);
     }
 
-    for(int i=0;i<obstacles_list.size();i++){
-    	translate = glm::translate (glm::vec3(obstacles_list[i].x,obstacles_list[i].y, 0));        // glTranslatef
+
+
+    for(int i=1;i<=trys;i++){
+    	translate = glm::translate (glm::vec3(76,(float)40/21.0*i,0));
     	Matrices.model = translate;
     	MVP = VP * Matrices.model;
     	glUniformMatrix4fv(Matrices.MatrixID, 1, GL_FALSE, &MVP[0][0]);
-    	draw3DObject(obstacles_list[i].vao);
+    	draw3DObject(tries);
+    }
+
+
+    translate = glm::translate (glm::vec3(misx,misy,0));
+    Matrices.model = translate;
+    MVP = VP * Matrices.model;
+    glUniformMatrix4fv(Matrices.MatrixID, 1, GL_FALSE, &MVP[0][0]);
+    draw3DObject(missile);
+
+    if(flagg){
+    	translate = glm::translate (glm::vec3(75,misy,0));
+    	Matrices.model = translate;
+    	MVP = VP * Matrices.model;
+    	glUniformMatrix4fv(Matrices.MatrixID, 1, GL_FALSE, &MVP[0][0]);
+    	draw3DObject(exc);
     }
 
     double xpos, ypos;
@@ -144,7 +169,7 @@ void draw (){
 void handleCollision(float ballx){
 	for(int i=0;i<rot_list.size();i++){
 		float dis=sqrt(sq(ballx+tranx-rot_list[i].first.x)+sq(bally+trany-rot_list[i].first.y));
-		if(dis<radius+rot_list[i].first.radius && !flag[i]){
+		if(dis<=radius+rot_list[i].first.radius && !flag[i]){
 			velocityx*=-0.4;
 			rot_list.erase(rot_list.begin() + i);
 			break;
@@ -152,7 +177,7 @@ void handleCollision(float ballx){
 	}
 	for(int i=0;i<target_list.size();i++){
 		float dis=sqrt(sq(ballx+tranx-target_list[i].x)+sq(bally+trany-target_list[i].y));
-		if(dis<radius+target_list[i].radius){
+		if(dis<=radius+target_list[i].radius){
 			flag[rot_list.size()]=1;
 			rot_list.push_back(make_pair(target_list[i],0));
 			rot_list[rot_list.size()-1].first.dir=1;
@@ -165,11 +190,20 @@ void handleCollision(float ballx){
 	for(int i=0;i<obstacles_list.size();i++){
 		float xcor=obstacles_list[i].x,ycor=obstacles_list[i].y;
 		float len = obstacles_list[i].len,bre=obstacles_list[i].bre;
-		if(ballx+tranx>=xcor && ballx+tranx<=xcor+bre && bally+trany<=ycor && bally+trany>=ycor-len)
+		if(ballx+tranx+radius>=xcor && ballx+tranx-radius<=xcor+bre && bally+trany-radius<=ycor && bally+trany+radius>=ycor-len)
 			velocityx*=-0.5;
 
 	}
 }
+
+
+void shootM(){
+	isshoot=1;
+	misx=80;
+	flagg=0;
+}
+
+
 int main (int argc, char** argv)
 {
 	glutInit(&argc, argv);
@@ -179,23 +213,34 @@ int main (int argc, char** argv)
 
 	initGL (window, width, height);
 
-	double last_update_time = glfwGetTime(),last_time=glfwGetTime(),current_time;
+	double last_update_time = glfwGetTime(),last_time=glfwGetTime(),current_time,ptime=-5;
 
 	getSpeed((initial_velocity-3)*4);
-	int score=0;
-	/* Draw in loop */
 	while (!glfwWindowShouldClose(window)) {
 		draw();		
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 		//cout<<rot_list.size()+target_list.size()<<endl;
 		current_time = glfwGetTime();
+		int shoo = rand()%800;
+		if(!shoo && !isshoot && !flagg){
+			ptime = current_time;
+			flagg=1;
+			misy=-10-rand()%25;
+		}
+
+		if((current_time - ptime) >= 2 && flagg)
+			shootM();
+
 		if((current_time-last_time) >=5){
 			if(rot_list.size()+target_list.size()<8)
 				makeTarget();
 			last_time=current_time;
 		}
 		if ((current_time - last_update_time) >= 0.08){
+			misx-=velx;
+			if(misx<-90)
+				isshoot=0;
 			if(stl){
 				if(initial_velocity>3.001){
 					initial_velocity-=0.25;
@@ -212,12 +257,9 @@ int main (int argc, char** argv)
 					getSpeed((initial_velocity-3)*4);
 				}
 			}
-			for(int i=0;i<=(int)velocityx*0.25+1;i++)
-				handleCollision((float)(ballx+i));
 
-			for(int i=(int)velocityx*0.25;i<=0;i++)
-				handleCollision((float)(ballx+i));
-
+			handleCollision(ballx);
+			handleCollision(ballx+velocityx*0.15);
 			for(int i=0;i<obstacles_list.size();i++){
 				obstacles_list[i].y+=obstacles_list[i].dir;
 				if(obstacles_list[i].y>40 || obstacles_list[i].y-obstacles_list[i].len <-40)
@@ -230,13 +272,17 @@ int main (int argc, char** argv)
 					rot_list[i].first.dir*=-1;
 			}
 
-			float theta = shoot_angle;
-			//v[0].clear();
-			//getScore(score++);
-			ballx+=velocityx*0.25;
+			for(int i=0;i<rot_list.size();i++){
+				for(int j=i+1;j<rot_list.size();i++){
+					float dis=sqrt(sq(ballx+tranx-rot_list[i].first.x)+sq(bally+trany-rot_list[i].first.y));
+					if(dis<=radius+rot_list[i].first.radius);
+				}
+			}
+
+			ballx+=velocityx*0.3;
 			bally=shoot?velocity*sin(shoot_angle)*shoot_time-gravity*shoot_time*shoot_time/2.0:-45.0;
-			
-			shoot_time+=0.25;
+
+			shoot_time+=0.3;
 			last_update_time = current_time;
 		}
 	}
