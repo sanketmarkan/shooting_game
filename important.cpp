@@ -33,7 +33,7 @@ struct GLMatrices {
 } Matrices;
 
 struct target{
-	float x,y,radius;
+	float x,y,radius,speed;
 	int dir;
 	VAO *vao;
 };

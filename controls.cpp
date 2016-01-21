@@ -27,7 +27,7 @@ void keyboard (GLFWwindow* window, int key, int scancode, int action, int mods)
 				}            	
 				break;
 			case GLFW_KEY_SPACE:
-				if(bally<=-42){
+				if(bally+trany<=-42 || ballx+tranx>=80 || ballx+tranx<=-80){
 					for(int i=0;i<10;i++)
 						flag[i]=0;
 					shoot=1;

@@ -144,8 +144,35 @@ void draw (){
     	rectangle_rotation=90;
 }
 
+void handleCollision(float ballx){
+	for(int i=0;i<rot_list.size();i++){
+		float dis=sqrt(sq(ballx+tranx-rot_list[i].first.x)+sq(bally+trany-rot_list[i].first.y));
+		if(dis<radius+rot_list[i].first.radius && !flag[i]){
+			velocityx*=-0.4;
+			rot_list.erase(rot_list.begin() + i);
+			break;
+		}
+	}
+	for(int i=0;i<target_list.size();i++){
+		float dis=sqrt(sq(ballx+tranx-target_list[i].x)+sq(bally+trany-target_list[i].y));
+		if(dis<radius+target_list[i].radius){
+			flag[rot_list.size()]=1;
+			rot_list.push_back(make_pair(target_list[i],0));
+			rot_list[rot_list.size()-1].first.dir=1;
+			rot_list[rot_list.size()-1].first.speed=velocityx*0.6;
+			velocityx*=-0.6;
+			target_list.erase(target_list.begin() + i);
+			break;
+		}
+	}
+	for(int i=0;i<obstacles_list.size();i++){
+		float xcor=obstacles_list[i].x,ycor=obstacles_list[i].y;
+		float len = obstacles_list[i].len,bre=obstacles_list[i].bre;
+		if(ballx+tranx>=xcor && ballx+tranx<=xcor+bre && bally+trany<=ycor && bally+trany>=ycor-len)
+			velocityx*=-0.5;
 
-
+	}
+}
 int main (int argc, char** argv)
 {
 	glutInit(&argc, argv);
@@ -183,45 +210,30 @@ int main (int argc, char** argv)
 					getSpeed((initial_velocity-3)*4);
 				}
 			}
+			for(int i=0;i<=(int)velocityx*0.25+1;i++)
+				handleCollision((float)(ballx+i));
 
+			for(int i=(int)velocityx*0.25;i<=0;i++)
+				handleCollision((float)(ballx+i));
+
+			for(int i=0;i<obstacles_list.size();i++){
+				obstacles_list[i].y+=obstacles_list[i].dir;
+				if(obstacles_list[i].y>40 || obstacles_list[i].y-obstacles_list[i].len <-40)
+					obstacles_list[i].dir*=-1;
+			}
+
+			for(int i=0;i<rot_list.size();i++){
+				rot_list[i].second+=rot_list[i].first.speed*rot_list[i].first.dir/10.0;
+				if(abs(rot_list[i].second)>maxangle)
+					rot_list[i].first.dir*=-1;
+			}
+			
 			float theta = shoot_angle;
 			v[0].clear();
 			getScore(score++);
 			ballx+=velocityx*0.25;
 			bally=shoot?velocity*sin(shoot_angle)*shoot_time-gravity*shoot_time*shoot_time/2.0:-45.0;
-			for(int i=0;i<rot_list.size();i++){
-				float dis=sqrt(sq(ballx+tranx-rot_list[i].first.x)+sq(bally+trany-rot_list[i].first.y));
-				if(dis<radius+rot_list[i].first.radius && !flag[i]){
-					velocityx*=-0.4;
-					rot_list.erase(rot_list.begin() + i);
-					break;
-				}
-				rot_list[i].second+=rot_list[i].first.dir;
-				if(abs(rot_list[i].second)>maxangle)
-					rot_list[i].first.dir*=-1;
-			}
-			for(int i=0;i<target_list.size();i++){
-				float dis=sqrt(sq(ballx+tranx-target_list[i].x)+sq(bally+trany-target_list[i].y));
-				//cout<<dis<<" "<<radius+target_list[i].radius<<endl;
-				if(dis<radius+target_list[i].radius){
-					velocityx*=-0.6;
-					flag[rot_list.size()]=1;
-					rot_list.push_back(make_pair(target_list[i],0));
-					rot_list[rot_list.size()-1].first.dir=1;
-					target_list.erase(target_list.begin() + i);
-					break;
-				}
-			}
-			for(int i=0;i<obstacles_list.size();i++){
-				obstacles_list[i].y+=obstacles_list[i].dir;
-				if(obstacles_list[i].y>40 || obstacles_list[i].y-obstacles_list[i].len <-40)
-					obstacles_list[i].dir*=-1;
-				float xcor=obstacles_list[i].x,ycor=obstacles_list[i].y;
-				float len = obstacles_list[i].len,bre=obstacles_list[i].bre;
-				if(ballx+tranx>=xcor && ballx+tranx<=xcor+bre && bally+trany<=ycor && bally+trany>=ycor-len)
-					velocityx=0;
-				
-			}
+			
 			shoot_time+=0.25;
 			last_update_time = current_time;
 		}

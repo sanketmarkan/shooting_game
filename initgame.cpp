@@ -57,8 +57,8 @@ void initGL (GLFWwindow* window, int width, int height)
 	createSupport ();
 	createBall ();
 	createRope ();
-//	obstacles_list.push_back(createObstacles (-10,0,3,25,1));
-//	obstacles_list.push_back(createObstacles (-19,25,3,25,-1));
+	obstacles_list.push_back(createObstacles (-10,0,3,25,1));
+	obstacles_list.push_back(createObstacles (-19,25,3,25,-1));
 //	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 	int x=rand()%10+1;
 	while(x<4)
