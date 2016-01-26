@@ -1,6 +1,4 @@
 #include "initobjects.cpp"
-#include "initgame.cpp"
-#include <GL/glut.h>
 using namespace std;
 #include "display.cpp"
 
@@ -149,21 +147,7 @@ void draw (){
     	draw3DObject(exc);
     }
 
-    double xpos, ypos;
-    int width,height;
-    glfwGetCursorPos(window,&xpos, &ypos);
-    glfwGetFramebufferSize(window, &width, &height);
-    xpos=-77+(float)154.0/width*xpos;
-    ypos=-40+(float)80.0/height*ypos;
-    ypos*=-1;
-    //cout<<xpos<<" "<<ypos<<endl;
-    float x=-70.0;
-    float y=base_position+1;
-    rectangle_rotation = atan2 (ypos-y,xpos-x) * 180 / M_PI;
-    if(rectangle_rotation<0)
-    	rectangle_rotation=0;
-    if(rectangle_rotation>90)
-    	rectangle_rotation=90;
+
 }
 
 void handleCollision(float ballx){
@@ -171,6 +155,7 @@ void handleCollision(float ballx){
 		float dis=sqrt(sq(ballx+tranx-rot_list[i].first.x)+sq(bally+trany-rot_list[i].first.y));
 		if(dis<=radius+rot_list[i].first.radius && !flag[i]){
 			velocityx*=-0.4;
+			score+=50;
 			rot_list.erase(rot_list.begin() + i);
 			break;
 		}
@@ -183,6 +168,7 @@ void handleCollision(float ballx){
 			rot_list[rot_list.size()-1].first.dir=1;
 			rot_list[rot_list.size()-1].first.speed=velocityx*0.6;
 			velocityx*=-0.6;
+			score+=25;
 			target_list.erase(target_list.begin() + i);
 			break;
 		}
@@ -206,14 +192,14 @@ void shootM(){
 
 int main (int argc, char** argv)
 {
-	glutInit(&argc, argv);
-	int width = glutGet(GLUT_SCREEN_WIDTH);;
-	int height = glutGet(GLUT_SCREEN_HEIGHT);
+	int width = 1366;
+	int height = 768;
 	window = initGLFW(width, height);
 
 	initGL (window, width, height);
 
 	double last_update_time = glfwGetTime(),last_time=glfwGetTime(),current_time,ptime=-5;
+	double just_detected[20];
 
 	getSpeed((initial_velocity-3)*4);
 	while (!glfwWindowShouldClose(window)) {
@@ -222,71 +208,142 @@ int main (int argc, char** argv)
 		glfwPollEvents();
 		//cout<<rot_list.size()+target_list.size()<<endl;
 		current_time = glfwGetTime();
-		int shoo = rand()%800;
+		/*int shoo = rand()%800;
 		if(!shoo && !isshoot && !flagg){
 			ptime = current_time;
 			flagg=1;
 			misy=-10-rand()%25;
 		}
 
+
+
 		if((current_time - ptime) >= 2 && flagg)
-			shootM();
+			shootM();*/
 
-		if((current_time-last_time) >=5){
-			if(rot_list.size()+target_list.size()<8)
-				makeTarget();
-			last_time=current_time;
+			if((current_time-last_time) >=5){
+				if(rot_list.size()+target_list.size()<8)
+					makeTarget();
+				last_time=current_time;
+			}
+			if ((current_time - last_update_time) >= 0.08){
+				if(stl){
+					if(initial_velocity>3.001)
+						initial_velocity-=0.25;
+				}
+
+
+				if(str){
+					if(initial_velocity<27.74)
+						initial_velocity+=0.25;
+				}
+				v[1].clear();
+				getSpeed((initial_velocity-3)*4);
+				v[0].clear();
+				getScore(score);
+
+				for(int i=0;i<=(int)velocityx*0.25+1;i++)
+					handleCollision((float)(ballx+i));
+
+				for(int i=(int)velocityx*0.25;i<=0;i++)
+					handleCollision((float)(ballx+i));
+
+				for(int i=0;i<obstacles_list.size();i++){
+					obstacles_list[i].y+=obstacles_list[i].dir;
+					if(obstacles_list[i].y>40 || obstacles_list[i].y-obstacles_list[i].len <-40)
+						obstacles_list[i].dir*=-1;
+				}
+
+				for(int i=0;i<rot_list.size();i++){
+					rot_list[i].second+=rot_list[i].first.speed*rot_list[i].first.dir/10.0;
+					if(abs(rot_list[i].second)>maxangle)
+						rot_list[i].first.dir*=-1;
+				}
+
+				for(int i=0;i<obstacles_list.size();i++){
+					for(int j=0;j<rot_list.size();j++){
+						if(current_time-just_detected[j] < 1)
+							continue;
+						float xdash,ydash,xy,yx;
+						xy = rot_list[j].first.x;
+						yx = rot_list[j].first.y;
+						xdash = xy - (yx-40) * sin(rot_list[j].second * M_PI/180.0);
+						ydash = yx + (40-yx) * (1-cos(rot_list[j].second * M_PI/180.0)) ;
+						if(xdash-rot_list[j].first.radius < obstacles_list[i].x + obstacles_list[i].bre){
+							cout<<xdash<<endl;
+							if(ydash < obstacles_list[i].y && ydash > obstacles_list[i].y - obstacles_list[i].len){
+								rot_list[j].first.dir*=-1;
+								just_detected[j] = current_time;
+							}
+						}
+					}
+				}
+				for(int j=0;j<rot_list.size();j++){
+					if(current_time-just_detected[j] < 1)
+						continue;
+					float xdash,ydash,xy,yx;
+					xy = rot_list[j].first.x;
+					yx = rot_list[j].first.y;
+					xdash = xy - (yx-40) * sin(rot_list[j].second * M_PI/180.0);
+					ydash = yx + (40-yx) * (1-cos(rot_list[j].second * M_PI/180.0));
+					for(int i=0;i<target_list.size();i++){
+						float dis=sqrt(sq(target_list[i].x-xdash)+sq(target_list[i].y-ydash));
+						if(dis<=rot_list[j].first.radius+target_list[i].radius){
+							rot_list.push_back(make_pair(target_list[i],0));
+							rot_list[rot_list.size()-1].first.dir=rot_list[j].first.dir;
+							rot_list[rot_list.size()-1].first.speed=rot_list[j].first.speed;
+							target_list.erase(target_list.begin() + i);
+							rot_list[j].first.dir*=-1;
+							just_detected[j] = current_time;
+							just_detected[rot_list.size()-1] = current_time;
+							break;
+						}
+					}
+				}
+
+
+
+				for(int i=0;i<rot_list.size();i++){
+					if(current_time-just_detected[i] < 1)
+						continue;
+					for(int j=i+1;j<rot_list.size();j++){
+						if(current_time-just_detected[j] < 1)
+							continue;
+						float xdash,ydash,xy,yx,xdash1,ydash1;
+						xy = rot_list[j].first.x;
+						yx = rot_list[j].first.y;
+						xdash = xy - (yx-40) * sin(rot_list[j].second * M_PI/180.0);
+						ydash = yx + (40-yx) * (1-cos(rot_list[j].second * M_PI/180.0)) ;
+						xy = rot_list[i].first.x;
+						yx = rot_list[i].first.y;
+						xdash1 = xy - (yx-40) * sin(rot_list[i].second * M_PI/180.0);
+						ydash1 = yx + (40-yx) * (1-cos(rot_list[i].second * M_PI/180.0)) ;
+						float dis=sqrt(sq(xdash1-xdash)+sq(ydash1-ydash));
+						if(dis<=rot_list[i].first.radius+rot_list[j].first.radius){
+							rot_list[i].first.dir*=-1;
+							rot_list[j].first.dir*=-1;
+							just_detected[j] = current_time;
+							just_detected[i] = current_time;
+							cout<<"collided"<<endl;
+						}
+					}
+				}
+				if(flq)
+					quit(window);
+				ballx+=velocityx*0.3;
+				bally=shoot?velocity*sin(shoot_angle)*shoot_time-gravity*shoot_time*shoot_time/2.0:-45.0;
+				if(ballx>77.0f/zoom+trans && 77.0f/zoom+trans+1<77.0 && bally>-41){
+					trans++;
+					Matrices.projection = glm::ortho(-77.0f+trans, 77.0f/zoom+trans, -40.0f, 40.0f/zoom, 0.1f, 500.0f);
+				}
+				if(ballx<-77+trans && trans>0 && bally>-41){
+					trans--;
+					Matrices.projection = glm::ortho(-77.0f+trans, 77.0f/zoom+trans, -40.0f, 40.0f/zoom, 0.1f, 500.0f);
+				}
+				shoot_time+=0.3;
+				last_update_time = current_time;
+			}
 		}
-		if ((current_time - last_update_time) >= 0.08){
-			misx-=velx;
-			if(misx<-90)
-				isshoot=0;
-			if(stl){
-				if(initial_velocity>3.001){
-					initial_velocity-=0.25;
-					v[1].clear();
-					getSpeed((initial_velocity-3)*4);
-				}
-			}
 
-
-			if(str){
-				if(initial_velocity<27.74){
-					initial_velocity+=0.25;
-					v[1].clear();
-					getSpeed((initial_velocity-3)*4);
-				}
-			}
-
-			handleCollision(ballx);
-			handleCollision(ballx+velocityx*0.15);
-			for(int i=0;i<obstacles_list.size();i++){
-				obstacles_list[i].y+=obstacles_list[i].dir;
-				if(obstacles_list[i].y>40 || obstacles_list[i].y-obstacles_list[i].len <-40)
-					obstacles_list[i].dir*=-1;
-			}
-
-			for(int i=0;i<rot_list.size();i++){
-				rot_list[i].second+=rot_list[i].first.speed*rot_list[i].first.dir/10.0;
-				if(abs(rot_list[i].second)>maxangle)
-					rot_list[i].first.dir*=-1;
-			}
-
-			for(int i=0;i<rot_list.size();i++){
-				for(int j=i+1;j<rot_list.size();i++){
-					float dis=sqrt(sq(ballx+tranx-rot_list[i].first.x)+sq(bally+trany-rot_list[i].first.y));
-					if(dis<=radius+rot_list[i].first.radius);
-				}
-			}
-
-			ballx+=velocityx*0.3;
-			bally=shoot?velocity*sin(shoot_angle)*shoot_time-gravity*shoot_time*shoot_time/2.0:-45.0;
-
-			shoot_time+=0.3;
-			last_update_time = current_time;
-		}
+		glfwTerminate();
+		exit(EXIT_SUCCESS);
 	}
-
-	glfwTerminate();
-	exit(EXIT_SUCCESS);
-}

@@ -1,4 +1,5 @@
 #include <GL/glut.h>
+#include "initgame.cpp"
 std::vector<VAO*> v[2];
 int x,y,mode;
 float lead,centd,segd;
@@ -120,38 +121,60 @@ void drawDigit(int digit){
 }
 
 void getScore(int value){
-        x=40;
-        y=0;
+        x=-68+trans;
+        y=22/zoom;
         mode=0;
-        int flag0=0;
-        if(value==0)
+        centd= 2.5/zoom;
+        segd = 1 /zoom;
+        int pvalue=value;
+        x-=centd+(float)1.0/zoom;
+        if(value==0){
                 drawDigit(0);
-        if(value<0){
-                flag0=1;
-                value *= -1;
-        }
-        int nod=log10(value)+1+flag0;
-        centd = (float)80.0/(nod+1);
-        segd = (float)centd/2.0f - 1.0;
-        x--;
-        while (value!=0){
                 x-=centd;
+        }
+        while (value!=0){
                 drawDigit(value%10);
+                x-=centd;
                 value = value/10;
         }
-        if(flag0==1){
-                drawDigit(-1);
+        if(pvalue<10){
+                drawDigit(0);
+                x-=centd;
         }
+        if(pvalue<100)
+                drawDigit(0);
+        y=27/zoom;x=-75+trans;
+        drawDigit(5);
+        x+=centd;
+        drawSubDigit(3);
+        drawSubDigit(4);
+        drawSubDigit(5);
+        drawSubDigit(7);
+        x+=centd;
+        drawDigit(0);
+        x+=centd;
+        drawSubDigit(1);
+        drawSubDigit(2);
+        drawSubDigit(3);
+        drawSubDigit(4);
+        drawSubDigit(5);
+        drawSubDigit(6);
+        x+=centd;
+        drawSubDigit(3);
+        drawSubDigit(4);
+        drawSubDigit(5);
+        drawSubDigit(6);
+        drawSubDigit(7);
 }
 
 void getSpeed(int value){
-        x=-70;
-        y=32;
+        x=-70+trans;
+        y=32/zoom;
         mode=1;
-        centd= 2.5;
-        segd = 1 ;
+        centd= 2.5/zoom;
+        segd = 1 /zoom;
         int pvalue=value;
-        x-=centd+1;
+        x-=centd+(float)1.0/zoom;
         if(value==0){
                 drawDigit(0);
                 x-=centd;
@@ -163,7 +186,7 @@ void getSpeed(int value){
         }
         if(pvalue<10)
                 drawDigit(0);
-        y=37;x=-75;
+        y=37/zoom;x=-75+trans;
         drawDigit(5);
         x+=centd;
         drawSubDigit(3);
